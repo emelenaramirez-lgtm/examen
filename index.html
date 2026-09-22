@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#f5f6f8" />
+  <title>Examen</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- Pantalla: cargando -->
+    <section id="screen-loading" class="screen active">
+      <div class="center-box">
+        <div class="spinner"></div>
+        <p id="loading-msg">Cargando…</p>
+      </div>
+    </section>
+
+    <!-- Pantalla: home -->
+    <section id="screen-home" class="screen">
+      <header class="brand">
+        <img id="home-logo" class="logo" alt="" />
+        <h1 id="home-institucion">Institución</h1>
+      </header>
+      <div class="home-body">
+        <h2>Examen en línea</h2>
+        <p class="muted">Presiona el botón para comenzar.</p>
+        <button id="btn-empezar" class="btn btn-primary btn-xl">Iniciar</button>
+      </div>
+      <footer class="home-footer">
+        <span id="status-cache" class="status">—</span>
+        <button id="btn-sync-open" class="btn btn-ghost">Sincronizar</button>
+      </footer>
+    </section>
+
+    <!-- Pantalla: seleccionar alumno -->
+    <section id="screen-select" class="screen">
+      <header class="topbar">
+        <button id="btn-back-home" class="btn btn-ghost">←</button>
+        <span class="topbar-title">Selecciona tu nombre</span>
+        <span></span>
+      </header>
+      <div class="select-body">
+        <input id="input-buscar" class="input-buscar" type="search"
+               placeholder="Escribe tu apellido…" autocomplete="off" />
+        <ul id="lista-alumnos" class="lista-alumnos"></ul>
+      </div>
+      <footer class="select-footer">
+        <span id="alumno-elegido" class="muted">Ningún alumno seleccionado</span>
+        <button id="btn-comenzar-examen" class="btn btn-primary" disabled>Comenzar</button>
+      </footer>
+    </section>
+
+    <!-- Pantalla: examen -->
+    <section id="screen-exam" class="screen">
+      <header class="exam-header">
+        <div class="exam-timer" id="exam-timer">00:00:00</div>
+        <div class="exam-progress">
+          <div class="progress-bar"><div id="progress-fill"></div></div>
+          <span id="progress-text">1 / 1</span>
+        </div>
+      </header>
+
+      <main class="exam-body">
+        <div class="pregunta-enunciado" id="pregunta-enunciado"></div>
+        <ul class="opciones" id="pregunta-opciones"></ul>
+      </main>
+
+      <footer class="exam-footer">
+        <button id="btn-prev" class="btn btn-secondary">← Anterior</button>
+        <button id="btn-next" class="btn btn-secondary">Siguiente →</button>
+        <button id="btn-finalizar" class="btn btn-danger">Finalizar</button>
+      </footer>
+    </section>
+
+    <!-- Pantalla: fin -->
+    <section id="screen-finish" class="screen">
+      <div class="center-box">
+        <div class="checkmark">✓</div>
+        <h2>Examen finalizado</h2>
+        <p class="muted">Avisa a tu profesor. No cierres la aplicación hasta que te lo indique.</p>
+        <p class="muted small">Serás redirigido en <span id="finish-countdown">10</span> s.</p>
+      </div>
+    </section>
+
+    <!-- Pantalla: bloqueado -->
+    <section id="screen-blocked" class="screen">
+      <div class="center-box">
+        <h2>Ya realizaste este examen</h2>
+        <p class="muted">No puedes rendirlo dos veces en esta tablet.</p>
+        <button id="btn-blocked-back" class="btn btn-primary">Volver al inicio</button>
+      </div>
+    </section>
+
+    <!-- Pantalla: sin datos -->
+    <section id="screen-nodata" class="screen">
+      <div class="center-box">
+        <h2>Sin datos disponibles</h2>
+        <p class="muted">Esta tablet necesita conectarse a internet al menos una vez para descargar el examen.</p>
+        <button id="btn-retry-data" class="btn btn-primary">Reintentar</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Modales -->
+  <div id="modal-continue" class="modal">
+    <div class="modal-card">
+      <h3>Examen en curso</h3>
+      <p class="muted">Detectamos un examen sin finalizar. ¿Deseas continuar donde quedaste?</p>
+      <div class="modal-actions">
+        <button id="btn-continue-yes" class="btn btn-primary">Continuar</button>
+        <button id="btn-continue-no" class="btn btn-secondary">Descartar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-confirm-finish" class="modal">
+    <div class="modal-card">
+      <h3>¿Finalizar examen?</h3>
+      <p class="muted">Una vez finalizado no podrás modificar tus respuestas.</p>
+      <div class="modal-actions">
+        <button id="btn-finish-cancel" class="btn btn-secondary">Cancelar</button>
+        <button id="btn-finish-confirm" class="btn btn-danger">Sí, finalizar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-sync" class="modal">
+    <div class="modal-card">
+      <h3>Sincronización</h3>
+      <p class="muted" id="sync-info">—</p>
+      <input id="sync-clave" class="input-buscar" type="password"
+             placeholder="Clave para forzar envío" autocomplete="off" />
+      <div class="modal-actions">
+        <button id="btn-sync-now" class="btn btn-primary">Sincronizar ahora</button>
+        <button id="btn-sync-close" class="btn btn-secondary">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/timer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
